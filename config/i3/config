@@ -134,7 +134,7 @@ bindsym $mod+Shift+0 move container to workspace $workspace10
 
 
 # set wallpaper on i3 start
-exec_always feh --bg-scale ~/.config/wallpapers/vancouver.jpg
+exec_always feh --bg-scale ~/.config/wallpapers/toronto.jpg
 exec --no-startup-id /usr/bin/workrave
 exec --no-startup-id /usr/bin/thunar
 exec --no-startup-id /usr/bin/xfce4-volumed
