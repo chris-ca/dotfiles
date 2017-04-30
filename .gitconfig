@@ -1,0 +1,20 @@
+[advice]
+    pushNonFastForward = false
+    statusHints = false
+    commitBeforeMerge = true
+[push]
+	default = matching
+[core]
+	editor = vim
+[color]
+    ui = true
+[alias]
+    s  = status
+    b  = branch
+    c  = commit -a
+    # log
+    l = log --topo-order --pretty=format:'%C(yellow)%h %C(cyan)%cn %C(blue)%cr%C(reset) %s'
+    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+[user]
+	email = github@nextmail.cc
+	name = Chris Weyland

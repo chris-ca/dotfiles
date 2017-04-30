@@ -1,0 +1,46 @@
+########################################################################
+#
+# ~/.screenrc
+# Konfigurationsdatei fuer screen
+#
+########################################################################
+
+########################################################################
+# Variabeln
+setenv FOO bar
+
+########################################################################
+# Allgemein
+startup_message  off   # Keine Willkommensnachricht
+vbell            off   # Kein visuelles Blinken
+msgwait 1              # Nachrichten für 1 Sekunden anzeigen
+defutf8          on    # utf8 bei neuen fenstern
+autodetach       on    # on = default
+shelltitle   'bash'    # Fenstertitel
+hardcopydir $HOME      # Screenshots ins Homeverzeichnis
+defscrollback 10000    # Buffer
+defmonitor off         # Aktivitäten nicht in Fenstertitel schreiben
+
+########################################################################
+# Meine Fenster
+screen -t bash
+screen -t bash
+screen -t bash
+select 1
+select 0
+
+########################################################################
+# http://stackoverflow.com/questions/1630013/vim-colorschemes-in-screen-putty
+# terminfo and termcap for nice 256 color terminal
+# allow bold colors - necessary for some reason
+attrcolor b ".I" 
+# tell screen how to set colors. AB = background, AF=foreground 
+termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm' 
+# erase background with current bg color 
+defbce "on"
+
+########################################################################
+# Statuszeile
+caption always "%{= wk} %-w%{= KW} [%n %t] %{-}%+w %= | @%H | %l | %Y-%m-%d %c "
+
+# EOF
