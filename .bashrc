@@ -11,6 +11,10 @@ export LANGUAGE=en_US.UTF-8
 export TERM=xterm-256color
 export EDITOR=/usr/bin/vi
 
+_ssh_auth_save() {
+        ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh-auth-sock.$HOSTNAME"
+}
+
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
