@@ -98,7 +98,4 @@ if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
 
-if [ -f ~/.shell_local ] ; then
-    . ~/.shell_local
-fi
 
