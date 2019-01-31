@@ -6,12 +6,14 @@
 	default = matching
 [core]
 	editor = vim
+    excludesfile = ~/.dotfiles/.gitignore_global
 [color]
     ui = true
 [alias]
     s  = status
     b  = branch
     c  = commit -a
+    push-test = "!f() { git commit --allow-empty -m 'push to execute post-receive';git push testdeploy master; }; f"
     # log
     l = log --topo-order --pretty=format:'%C(yellow)%h %C(cyan)%cn %C(blue)%cr%C(reset) %s'
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
