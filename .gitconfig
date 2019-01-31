@@ -6,6 +6,7 @@
 	default = matching
 [core]
 	editor = vim
+	fileMode = false
 [color]
     ui = true
 [alias]
