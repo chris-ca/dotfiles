@@ -27,3 +27,5 @@ PS4="+ "
 
 # aliases are loaded from bashrc
 test -f ~/.bashrc && source ~/.bashrc
+
+test -f ~/.sh_local && source ~/.sh_local
