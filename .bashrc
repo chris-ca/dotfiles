@@ -2,8 +2,44 @@
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
 # for examples
 
+#color codes
+
+BG_BLACK="\e[40m"
+BG_RED="\e[41m"
+BG_GREEN="\e[42m"
+BG_YELLOW="\e[43m"
+BG_BLUE="\e[44m"
+BG_MAGENTA="\e[45m"
+BG_CYAN="\e[46m"
+BG_WHITE="\e[107m"
+
+FG_BLACK="\e[30m"
+FG_RED="\e[31m"
+FG_GREEN="\e[32m"
+FG_YELLOW="\e[33m"
+FG_BLUE="\e[34m"
+FG_MAGENTA="\e[35m"
+FG_CYAN="\e[36m"
+FG_WHITE="\e[97m"
+
+PS1_BG=$BG_BLUE
+PS1_FG=$FG_WHITE
+
+test -f ~/.sh_local && source ~/.sh_local
+
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
+
+export PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\e[38;5;1m\]\u@'; else echo ''; fi)\[\e[38;5;10m\]${PS1_FG}${PS1_BG}${HOSTNAME}\e[0m\[\e[38;5;6m\][\w]:\[$(tput sgr0)\]\[\e[38;5;15m\] \[$(tput sgr0)\]"
+
+#case ${TERM} in
+#    xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
+#        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\e]0;%s@%s:%s\007" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"'
+#        ;;
+#    screen)
+#        PROMPT_COMMAND=${PROMPT_COMMAND:+$PROMPT_COMMAND; }'printf "\e_%s@%s:%s\e\\" "${USER}" "${HOSTNAME%%.*}" "${PWD/#$HOME/~}"'
+#        ;;
+#esac
 
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
@@ -80,4 +116,3 @@ fi
 if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
     . /etc/bash_completion
 fi
-
