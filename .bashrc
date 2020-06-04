@@ -4,33 +4,24 @@
 
 #color codes
 
-BG_BLACK="\e[40m"
-BG_RED="\e[41m"
-BG_GREEN="\e[42m"
-BG_YELLOW="\e[43m"
-BG_BLUE="\e[44m"
-BG_MAGENTA="\e[45m"
-BG_CYAN="\e[46m"
-BG_WHITE="\e[107m"
+COL_BLACK="0"
+COL_RED="160"
+COL_GREEN="28"
+COL_YELLOW="184"
+COL_BLUE="33"
+COL_MAGENTA="161"
+COL_CYAN="16"
+COL_WHITE="231"
 
-FG_BLACK="\e[30m"
-FG_RED="\e[31m"
-FG_GREEN="\e[32m"
-FG_YELLOW="\e[33m"
-FG_BLUE="\e[34m"
-FG_MAGENTA="\e[35m"
-FG_CYAN="\e[36m"
-FG_WHITE="\e[97m"
-
-PS1_BG=$BG_BLUE
-PS1_FG=$FG_WHITE
+PS1_BG=$COL_WHITE
+PS1_FG=$COL_BLACK
 
 test -f ~/.sh_local && source ~/.sh_local
 
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-export PS1="$(if [[ ${EUID} == 0 ]]; then echo '\[\e[38;5;1m\]\u@'; else echo ''; fi)\[\e[38;5;10m\]${PS1_FG}${PS1_BG}${HOSTNAME}\e[0m\[\e[38;5;6m\][\w]:\[$(tput sgr0)\]\[\e[38;5;15m\] \[$(tput sgr0)\]"
+export PS1="\n[\u@\[\$(tput setab $PS1_BG)\]\[$(tput setaf $PS1_FG)\]\h\[$(tput sgr0)\] \W] \n\[\e[0m\]\$ "
 
 #case ${TERM} in
 #    xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
