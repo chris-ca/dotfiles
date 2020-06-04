@@ -21,7 +21,7 @@ test -f ~/.sh_local && source ~/.sh_local
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-export PS1="\n[\u@\[\$(tput setab $PS1_BG)\]\[$(tput setaf $PS1_FG)\]\h\[$(tput sgr0)\] \W] \n\[\e[0m\]\$ "
+export PS1="\n[\u@\[\$(tput setab $PS1_BG)\]\[\$(tput setaf $PS1_FG)\]\h\[$(tput sgr0)\] \W] \n\[\e[0m\]\$ "
 
 #case ${TERM} in
 #    xterm*|rxvt*|Eterm|aterm|kterm|gnome*)
