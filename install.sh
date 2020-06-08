@@ -16,4 +16,4 @@ ln -f -s .dotfiles/.profile
 ln -f -s .dotfiles/.screenrc
 ln -f -s .dotfiles/.ssh_rc
 ln -f -s .dotfiles/.tmux.conf
-ln -f -s .dotfiles/.vimrc
+ln -f -s .vim/.vimrc
