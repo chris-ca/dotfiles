@@ -18,6 +18,7 @@
     # log
     l = log --topo-order --pretty=format:'%C(yellow)%h %C(cyan)%cn %C(blue)%cr%C(reset) %s'
     lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+    forcepush = "!f() { git push $1 $2;git commit --allow-empty -m 'push to production execute post-receive';git push $1 $2; }; f"
 [user]
 	email = github@nextmail.cc
 	name = Chris Weyland
