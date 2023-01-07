@@ -22,33 +22,37 @@ Plug 'itchyny/lightline.vim' " nicer statusbar display
 Plug 'itchyny/vim-gitbranch' " show git branch in statusbar
 Plug 'tpope/vim-commentary' " use 'gcc' to comment code
 Plug 'airblade/vim-gitgutter' " Display changed line marker on left hand side (only visible when window is redrawn)
-Plug 'neovim/nvim-lspconfig' " connect to LSP server
 Plug 'preservim/nerdtree', { 'on': 'NERDTreeToggle' } " NERD tree will be loaded on the first invocation of NERDTreeToggle command
 Plug 'nvim-lua/completion-nvim'
 Plug 'junegunn/goyo.vim', { 'for': 'markdown' } " Use ':Goyo' for minmal vim, e.g. when editing markdown
 autocmd! User goyo.vim echom 'Goyo is now loaded!'
+Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}
+" 9000+ Snippets
+Plug 'ms-jpq/coq.artifacts', {'branch': 'artifacts'}
+Plug 'rmagatti/auto-session'
+
+" LSP Stuff
+Plug 'neovim/nvim-lspconfig' " connect to LSP server
+Plug 'pappasam/jedi-language-server'
+
+" Lots of configuration necessary, couldn't get this to work yet
+" Plug 'hrsh7th/cmp-nvim-lsp'
+" Plug 'hrsh7th/cmp-buffer'
+" Plug 'hrsh7th/cmp-path'
+" Plug 'hrsh7th/cmp-cmdline'
+" Plug 'hrsh7th/nvim-cmp'
+" Plug 'quangnguyen30192/cmp-nvim-ultisnips'
 call plug#end()
 
-"
+" set completeopt=menu,menuone,noselect
+" LSP support
+lua require('pyright')
+" lua require('pylsp') 
+" lua require('cmpconfig')
 " lets try the mouse
 " set ttymouse=xterm2
 set mouse=a
 
-" pylsp 
-lua <<EOF
-require'lspconfig'.pylsp.setup{
-    settings = {
-      pylsp = {
-        plugins = {
-          pycodestyle = {
-            ignore = {'W391'},
-            maxLineLength = 99
-          }
-        }
-      }
-    }
-}
-EOF
 
 " Theme, Window, Look and Feel {
     "
@@ -240,7 +244,7 @@ EOF
     set hlsearch        " Highlight search terms
 " }
 " Python stuff {
-    autocmd FileType python map <buffer> <leader>f :call flake8#Flake8()<CR>
+    autocmd FileType python map <buffer> <leader>f :call poetry flake8#Flake8()<CR>
     autocmd FileType python map <buffer> <F9> :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
     au FileType python map <leader>b obreakpoint()<esc>
@@ -249,7 +253,7 @@ EOF
 " }
 
 " Remappings, Hotkeys, Macros {
-    let mapleader = "\<Space>"
+    let mapleader = ","
 
     " Nerdtree {
     nnoremap <leader>n :NERDTreeFocus<CR>
