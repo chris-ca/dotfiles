@@ -4,7 +4,7 @@ alias ll='ls -lhF'
 alias la='ls -AlhF'
 alias ls="ls --color=auto"
 alias grep="grep --colour=auto"
-
+alias randstring="tr -dc A-Za-z0-9 </dev/urandom | head -c 16; echo"
 
 alias cw..='cd ..'
 alias ..='cd ..'
