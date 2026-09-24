@@ -23,8 +23,10 @@ PS1_FG=$COL_BLACK
 HISTCONTROL=ignoreboth
 HISTSIZE=10000
 HISTFILESIZE=20000
+HISTTIMEFORMAT='%F %T '
 shopt -s histappend
 shopt -s checkwinsize
+shopt -s cdspell globstar
 
 set -o vi
 
@@ -48,6 +50,13 @@ if ! shopt -oq posix; then
     fi
 fi
 
+# __git_ps1 for the prompt; bash-completion usually loads it already
+if ! type __git_ps1 >/dev/null 2>&1; then
+    for f in /usr/lib/git-core/git-sh-prompt /usr/share/git-core/contrib/completion/git-prompt.sh; do
+        [ -f "$f" ] && . "$f" && break
+    done
+fi
+
 if grep -qi microsoft /proc/version 2>/dev/null; then
     export IS_WSL=1
     alias open='explorer.exe'
@@ -55,5 +64,20 @@ fi
 
 test -f ~/.bashrc.local && . ~/.bashrc.local
 
-# Built after ~/.bashrc.local so hosts can set PS1_BG / PS1_FG
-PS1="\n\[\$(tput setab $PS1_BG)\]\[\$(tput setaf $PS1_FG)\]\h\[\$(tput sgr0)\]  [\$PWD] \n\$ "
+# Colors are resolved after ~/.bashrc.local so hosts can set PS1_BG / PS1_FG
+_ps1_host="\[$(tput setab $PS1_BG)$(tput setaf $PS1_FG)\]\h\[$(tput sgr0)\]"
+_ps1_err="\[$(tput setaf $COL_RED)\]"
+_ps1_reset="\[$(tput sgr0)\]"
+
+# Runs before each prompt: keep the exit code, and write history immediately
+# so other shells (tmux panes) can pick it up with `history -n`
+_prompt_command() {
+    local status=$?
+    history -a
+    PS1="\n$_ps1_host  [\$PWD]"
+    type __git_ps1 >/dev/null 2>&1 && PS1+='$(__git_ps1 " (%s)")'
+    PS1+=" \n"
+    [ $status -ne 0 ] && PS1+="$_ps1_err[$status]$_ps1_reset "
+    PS1+='\$ '
+}
+PROMPT_COMMAND="_prompt_command${PROMPT_COMMAND:+; $PROMPT_COMMAND}"

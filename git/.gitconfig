@@ -10,6 +10,23 @@
 	excludesFile = ~/.config/git/ignore
 [color]
 	ui = true
+[init]
+	defaultBranch = main
+[pull]
+	ff = only
+[fetch]
+	prune = true
+[rebase]
+	autoStash = true
+[diff]
+	algorithm = histogram
+# zdiff3 is nicer but makes git < 2.35 fail on every merge
+[merge]
+	conflictStyle = diff3
+[rerere]
+	enabled = true
+[commit]
+	verbose = true
 [alias]
 	s = status
 	b = branch

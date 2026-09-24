@@ -5,7 +5,7 @@ Personal shell, git and tmux configuration shared across VPSes, workstations and
 ```sh
 sudo apt install stow
 git clone https://github.com/chris-ca/dotfiles.git ~/.dotfiles
-~/.dotfiles/install.sh              # all packages: bash git tmux ssh
+~/.dotfiles/install.sh              # all packages: bash git tmux ssh vim
 ~/.dotfiles/install.sh bash git     # or a subset
 ```
 Existing files that would be replaced are moved to `~/.dotfiles-backup/<timestamp>/`.
@@ -14,10 +14,11 @@ Re-running is safe. A leftover legacy `~/.sh_local` is reported; move its conten
 ## Packages
 | Package | Files |
 |---------|-------|
-| `bash`  | `.profile` (environment), `.bash_profile`, `.bashrc`, `.bash_aliases` |
+| `bash`  | `.profile` (environment), `.bash_profile`, `.bashrc`, `.bash_aliases`, `.inputrc` |
 | `git`   | `.gitconfig`, `.config/git/ignore` (global ignores) |
 | `tmux`  | `.tmux.conf` (TPM and plugins install themselves on first start) |
 | `ssh`   | `.ssh/rc` (stable agent socket for tmux) |
+| `vim`   | `.vimrc` (no plugins; swap/undo files in `~/.vim/`) |
 
 ## Per-host overrides (not tracked)
 - `~/.profile.local`: sourced at the end of `.profile` (login environment), e.g. extra `PATH` entries.

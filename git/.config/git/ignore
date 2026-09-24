@@ -3,3 +3,9 @@
 *.pyc
 __pycache__
 **/.claude/settings.local.json
+.env
+.venv/
+node_modules/
+.DS_Store
+Thumbs.db
+*:Zone.Identifier
