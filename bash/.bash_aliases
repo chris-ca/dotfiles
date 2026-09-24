@@ -1,4 +1,3 @@
-# ls and coloring
 alias l='ls -lhF'
 alias ll='ls -lhF'
 alias la='ls -AlhF'

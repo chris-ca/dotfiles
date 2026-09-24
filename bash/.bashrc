@@ -1,6 +1,5 @@
 # ~/.bashrc: interactive shells. Per-host overrides go in ~/.bashrc.local (sourced last).
 
-# If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
 # 256-color codes, used for the host label in the prompt
@@ -27,7 +26,6 @@ HISTFILESIZE=20000
 shopt -s histappend
 shopt -s checkwinsize
 
-# vim keybindings for easier navigation
 set -o vi
 
 if [ -x /usr/bin/dircolors ]; then
@@ -50,7 +48,6 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# WSL
 if grep -qi microsoft /proc/version 2>/dev/null; then
     export IS_WSL=1
     alias open='explorer.exe'
