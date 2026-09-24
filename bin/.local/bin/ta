@@ -1,0 +1,11 @@
+#!/bin/sh
+# Usage: ta [name]   Attach to tmux session <name> (default: main), creating it if needed.
+name=${1:-main}
+
+if [ -n "$TMUX" ]; then
+    # Already inside tmux: switch instead of nesting
+    tmux has-session -t "=$name" 2>/dev/null || tmux new-session -d -s "$name"
+    exec tmux switch-client -t "=$name"
+fi
+
+exec tmux new-session -A -s "$name"

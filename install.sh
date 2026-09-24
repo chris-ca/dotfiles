@@ -1,11 +1,11 @@
 #!/bin/sh
 # Link dotfile packages into $HOME with GNU stow.
-# Usage: ./install.sh [package ...]   (default: bash git tmux ssh vim)
+# Usage: ./install.sh [package ...]   (default: bash git tmux ssh vim bin)
 # Conflicting files are moved to ~/.dotfiles-backup/<timestamp>/ first.
 set -eu
 
 REPO=$(cd "$(dirname "$0")" && pwd)
-PACKAGES=${*:-bash git tmux ssh vim}
+PACKAGES=${*:-bash git tmux ssh vim bin}
 BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
 
 command -v stow >/dev/null || { echo "stow is not installed (apt install stow)" >&2; exit 1; }

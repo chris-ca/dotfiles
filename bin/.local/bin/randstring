@@ -1,0 +1,12 @@
+#!/bin/sh
+# Usage: randstring [length] [charset]   (default: 16, A-Za-z0-9)
+length=${1:-16}
+charset=${2:-A-Za-z0-9}
+
+case $length in
+    ''|*[!0-9]*|0) echo "usage: randstring [length] [charset]" >&2; exit 2;;
+esac
+
+# LC_ALL=C: let tr work on raw bytes whatever the locale
+LC_ALL=C tr -dc "$charset" </dev/urandom | head -c "$length"
+echo
