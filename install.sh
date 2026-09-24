@@ -17,7 +17,18 @@ for f in .gitignore .gitignore_global .ssh_rc .screenrc .vimrc; do
     fi
 done
 
-mkdir -p -m 700 "$HOME/.ssh"
+mkdir -p -m 700 "$HOME/.ssh" "$HOME/.ssh/config.d"
+
+# An existing ~/.ssh/config holds this host's entries: keep them active via config.d
+case " $PACKAGES " in *" ssh "*)
+    if [ -f "$HOME/.ssh/config" ] && [ ! -L "$HOME/.ssh/config" ] && [ ! -e "$HOME/.ssh/config.d/local" ]; then
+        mv "$HOME/.ssh/config" "$HOME/.ssh/config.d/local"
+        chmod 600 "$HOME/.ssh/config.d/local"
+        echo "moved ~/.ssh/config -> ~/.ssh/config.d/local"
+    fi
+    # ssh rejects a group/world-writable config; git doesn't keep the mode, the umask decides
+    chmod 600 "$REPO/ssh/.ssh/config"
+esac
 
 for pkg in $PACKAGES; do
     [ -d "$REPO/$pkg" ] || { echo "unknown package: $pkg" >&2; exit 1; }
