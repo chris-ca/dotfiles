@@ -1,19 +1,42 @@
 #!/bin/sh
-INSTALLDIR=$1
+# Link dotfile packages into $HOME with GNU stow.
+# Usage: ./install.sh [package ...]   (default: bash git tmux ssh)
+# Conflicting files are moved to ~/.dotfiles-backup/<timestamp>/ first.
+set -eu
 
-if [ -z "$INSTALLDIR" ]; then
-    echo "INSTALLDIR \$1 must be specified (usually \$HOME)";
+REPO=$(cd "$(dirname "$0")" && pwd)
+PACKAGES=${*:-bash git tmux ssh}
+BACKUP="$HOME/.dotfiles-backup/$(date +%Y%m%d-%H%M%S)"
+
+command -v stow >/dev/null || { echo "stow is not installed (apt install stow)" >&2; exit 1; }
+
+# Symlinks left behind by the old ln-based install.sh
+for f in .gitignore .gitignore_global .ssh_rc .screenrc .vimrc; do
+    if [ -L "$HOME/$f" ] && case $(readlink "$HOME/$f") in *dotfiles*) true;; *) false;; esac; then
+        rm "$HOME/$f"
+    fi
+done
+
+mkdir -p -m 700 "$HOME/.ssh"
+
+for pkg in $PACKAGES; do
+    [ -d "$REPO/$pkg" ] || { echo "unknown package: $pkg" >&2; exit 1; }
+    (cd "$REPO/$pkg" && find . -type f -o -type l) | sed 's|^\./||' | while read -r rel; do
+        target="$HOME/$rel"
+        if [ -e "$target" ] || [ -L "$target" ]; then
+            # already linked by stow: nothing to do
+            [ "$(readlink -f "$target")" = "$REPO/$pkg/$rel" ] && continue
+            mkdir -p "$BACKUP/$(dirname "$rel")"
+            mv "$target" "$BACKUP/$rel"
+            echo "backed up ~/$rel -> $BACKUP/$rel"
+        fi
+    done
+done
+
+# --no-folding: never symlink whole directories like ~/.ssh or ~/.config into the repo
+stow --dir="$REPO" --target="$HOME" --no-folding --restow $PACKAGES
+echo "linked: $PACKAGES"
+
+if [ -e "$HOME/.sh_local" ]; then
+    echo "note: ~/.sh_local is no longer read; move its contents to ~/.profile.local (environment) or ~/.bashrc.local (interactive)" >&2
 fi
-
-cd $INSTALLDIR
-ln -f -s .dotfiles/.bash_aliases
-ln -f -s .dotfiles/.bash_profile
-ln -f -s .dotfiles/.bashrc
-ln -f -s .dotfiles/.gitconfig
-ln -f -s .dotfiles/.gitignore
-ln -f -s .dotfiles/.gitignore_global
-ln -f -s .dotfiles/.profile
-ln -f -s .dotfiles/.screenrc
-ln -f -s .dotfiles/.ssh_rc
-ln -f -s .dotfiles/.tmux.conf
-ln -f -s .vim/.vimrc

@@ -1,17 +1,16 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# ~/.profile: login environment for all shells (sourced by ~/.bash_profile).
+# Per-host environment (PATH, exports) goes in ~/.profile.local (sourced last).
 
-# the default umask is set in /etc/profile; for setting the umask
-# for ssh logins, install and configure the libpam-umask package.
-#umask 022
+[ -d "$HOME/.local/bin" ] && PATH="$HOME/.local/bin:$PATH"
+[ -d "$HOME/bin" ] && PATH="$HOME/bin:$PATH"
+export PATH
 
-# if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
+export EDITOR=vim
+export VISUAL=vim
+
+# Only request a locale that is actually generated, to avoid setlocale warnings
+if locale -a 2>/dev/null | grep -qi '^en_US\.utf-\?8$'; then
+    export LANG=en_US.UTF-8
 fi
+
+[ -f "$HOME/.profile.local" ] && . "$HOME/.profile.local"

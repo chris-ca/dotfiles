@@ -1,1 +1,3 @@
-.sh_local
+.env*
+logs/
+data/

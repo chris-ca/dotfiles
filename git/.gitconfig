@@ -1,24 +1,26 @@
 [advice]
-    pushNonFastForward = false
-    statusHints = false
-    commitBeforeMerge = true
+	pushNonFastForward = false
+	statusHints = false
+	commitBeforeMerge = true
 [push]
-	default = matching
+	default = simple
+	autoSetupRemote = true
 [core]
 	editor = vim
-	fileMode = false
-    excludesfile = ~/.dotfiles/.gitignore_global
+	excludesFile = ~/.config/git/ignore
 [color]
-    ui = true
+	ui = true
 [alias]
-    s  = status
-    b  = branch
-    c  = commit -a
-    push-test = "!f() { git commit --allow-empty -m 'push to execute post-receive';git push testdeploy master; }; f"
-    # log
-    l = log --topo-order --pretty=format:'%C(yellow)%h %C(cyan)%cn %C(blue)%cr%C(reset) %s'
-    lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
-    forcepush = "!f() { git push $1 $2;git commit --allow-empty -m 'push to production execute post-receive';git push $1 $2; }; f"
+	s = status
+	b = branch
+	c = commit -a
+	push-test = "!f() { git commit --allow-empty -m 'push to execute post-receive';git push testdeploy master; }; f"
+	# log
+	l = log --topo-order --pretty=format:'%C(yellow)%h %C(cyan)%cn %C(blue)%cr%C(reset) %s'
+	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	forcepush = "!f() { git push $1 $2;git commit --allow-empty -m 'push to production execute post-receive';git push $1 $2; }; f"
 [user]
-	# email = @
 	name = Chris Weyland
+# Per-machine settings (user.email, safe.directory, ...); not tracked
+[include]
+	path = ~/.gitconfig.local
