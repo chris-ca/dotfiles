@@ -129,7 +129,7 @@ myhost  [/home/chris/dotfiles] (master)
 - **`globstar`:** `**` matches recursively (`ls **/*.py`).
 - **`EDITOR`/`VISUAL` = `vim`** everywhere; before, it was `/usr/bin/vi` in the shell and `vim` in git.
 - **Locale:** `LANG=en_US.UTF-8` is set if that locale exists on the host, otherwise `C.UTF-8`, so UTF-8 works everywhere. `LC_ALL` and `LANGUAGE` are no longer forced, which caused `setlocale` warnings on minimal VPSes.
-- **`TERM`:** no longer forced to `xterm-256color`, which broke colours and keys inside tmux. The terminal and tmux now set it correctly.
+- **`TERM`:** no longer forced to `xterm-256color`, which broke colours and keys inside tmux. The terminal and tmux now set it. Only a plain `xterm` is upgraded to `xterm-256color` (if the host knows it), so the prompt colours also work outside tmux.
 - **WSL:** detected automatically. `$IS_WSL` is set, and `open <file>` opens it in Windows.
 - **File roles:** `.profile` holds the environment, `.bashrc` holds interactive settings, and `.bash_profile` just loads both. Before, the same settings were spread over all three.
 

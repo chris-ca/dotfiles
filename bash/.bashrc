@@ -2,6 +2,11 @@
 
 [[ $- != *i* ]] && return
 
+# Terminals reporting plain "xterm" nearly all support 256 colours; upgrade only that case
+if [ "$TERM" = xterm ] && infocmp xterm-256color >/dev/null 2>&1; then
+    export TERM=xterm-256color
+fi
+
 # 256-color codes, used for the host label in the prompt
 COL_BLACK="16"
 COL_RED="160"
