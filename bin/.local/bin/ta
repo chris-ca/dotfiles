@@ -4,8 +4,9 @@ name=${1:-main}
 
 if [ -n "$TMUX" ]; then
     # Already inside tmux: switch instead of nesting
-    tmux has-session -t "=$name" 2>/dev/null || tmux new-session -d -s "$name"
+    tmux has-session -t "=$name" 2>/dev/null || tmux -u new-session -d -s "$name"
     exec tmux switch-client -t "=$name"
 fi
 
-exec tmux new-session -A -s "$name"
+# -u: treat the terminal as UTF-8 even if the locale doesn't say so
+exec tmux -u new-session -A -s "$name"

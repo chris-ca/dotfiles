@@ -128,7 +128,7 @@ myhost  [/home/chris/dotfiles] (master)
 - **`cdspell`:** `cd` fixes small typos in directory names (`cd /ect` → `/etc`).
 - **`globstar`:** `**` matches recursively (`ls **/*.py`).
 - **`EDITOR`/`VISUAL` = `vim`** everywhere; before, it was `/usr/bin/vi` in the shell and `vim` in git.
-- **Locale:** `LANG=en_US.UTF-8` is set only if that locale exists on the host. `LC_ALL` and `LANGUAGE` are no longer forced, which caused `setlocale` warnings on minimal VPSes.
+- **Locale:** `LANG=en_US.UTF-8` is set if that locale exists on the host, otherwise `C.UTF-8`, so UTF-8 works everywhere. `LC_ALL` and `LANGUAGE` are no longer forced, which caused `setlocale` warnings on minimal VPSes.
 - **`TERM`:** no longer forced to `xterm-256color`, which broke colours and keys inside tmux. The terminal and tmux now set it correctly.
 - **WSL:** detected automatically. `$IS_WSL` is set, and `open <file>` opens it in Windows.
 - **File roles:** `.profile` holds the environment, `.bashrc` holds interactive settings, and `.bash_profile` just loads both. Before, the same settings were spread over all three.
@@ -226,7 +226,7 @@ This keeps SSH agent forwarding working inside tmux after you reconnect. It was 
 - **Window numbering:** windows are renumbered when one closes, so there are no gaps like 1, 3, 4.
 - **Current directory:** splits (`prefix "`, `prefix %`) and new windows (`prefix c`) open in the current pane's directory.
 - **Clipboard:** text copied in copy mode reaches your **local** clipboard, also from tmux running on a VPS over SSH. This uses a terminal feature called OSC 52. It works in Windows Terminal, iTerm2, WezTerm, kitty and Alacritty, but not in GNOME Terminal. On WSL, tmux-yank also uses `clip.exe`.
-- **Terminal type:** `tmux-256color`, so colours and special keys work correctly inside tmux.
+- **Terminal type:** `tmux-256color` (or `screen-256color` on hosts without that terminfo entry), so colours and special keys work correctly inside tmux. 256 colours and truecolor are enabled even when the outer terminal only reports `TERM=xterm`, and `ta` starts tmux in UTF-8 mode.
 - **Plugins install themselves:** on a new host, the first tmux start installs TPM and all plugins (tmux-sensible, tmux-yank, tmux-resurrect). Before, TPM's standard bootstrap only downloaded TPM, and the plugins never installed. There's no longer any need to press `prefix I`, except after adding a new plugin.
 
 Unchanged: prefix `C-a`, vi copy mode, `prefix r` to reload, `prefix m` / `prefix M` to turn mouse on/off, tmux-resurrect (`prefix C-s` save, `prefix C-r` restore).
