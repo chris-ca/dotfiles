@@ -128,7 +128,7 @@ myhost  [/home/chris/dotfiles] (master)
 - **`cdspell`:** `cd` fixes small typos in directory names (`cd /ect` → `/etc`).
 - **`globstar`:** `**` matches recursively (`ls **/*.py`).
 - **`EDITOR`/`VISUAL` = `vim`** everywhere; before, it was `/usr/bin/vi` in the shell and `vim` in git.
-- **Locale:** `LANG=en_US.UTF-8` is set if that locale exists on the host, otherwise `C.UTF-8`, so UTF-8 works everywhere. `LC_ALL` and `LANGUAGE` are no longer forced, which caused `setlocale` warnings on minimal VPSes.
+- **Locale:** `LANG=en_US.UTF-8` is set if that locale exists on the host, otherwise `C.UTF-8`, so UTF-8 works everywhere. `LC_ALL` and `LANGUAGE` are no longer forced, which caused `setlocale` warnings on minimal VPSes. `LC_*` variables naming a locale the host lacks (typically forwarded by ssh from the client, e.g. `LC_MONETARY=de_CH.UTF-8`) are unset at login, so `sudo apt upgrade` no longer prints perl/apt-listchanges locale warnings.
 - **`TERM`:** no longer forced to `xterm-256color`, which broke colours and keys inside tmux. The terminal and tmux now set it. Only a plain `xterm` is upgraded to `xterm-256color` (if the host knows it), so the prompt colours also work outside tmux.
 - **WSL:** detected automatically. `$IS_WSL` is set, and `open <file>` opens it in Windows.
 - **File roles:** `.profile` holds the environment, `.bashrc` holds interactive settings, and `.bash_profile` just loads both. Before, the same settings were spread over all three.

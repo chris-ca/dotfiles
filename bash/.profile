@@ -17,6 +17,17 @@ for _l in en_US C; do
         break
     fi
 done
-unset _l _locales
+
+# Drop LC_* naming locales not installed here: ssh forwards the client's LC_*
+# (SendEnv/AcceptEnv) and sudo keeps them, so perl/apt-listchanges would warn
+_locales=$(printf '%s\n' "$_locales" | tr 'A-Z' 'a-z')
+for _v in LC_ALL LC_CTYPE LC_NUMERIC LC_TIME LC_COLLATE LC_MONETARY LC_MESSAGES \
+          LC_PAPER LC_NAME LC_ADDRESS LC_TELEPHONE LC_MEASUREMENT LC_IDENTIFICATION; do
+    eval "_l=\${$_v-}"
+    [ -n "$_l" ] || continue
+    _l=$(printf '%s' "$_l" | tr 'A-Z' 'a-z' | sed 's/utf-8/utf8/')
+    printf '%s\n' "$_locales" | grep -qxF "$_l" || unset "$_v"
+done
+unset _l _v _locales
 
 [ -f "$HOME/.profile.local" ] && . "$HOME/.profile.local"
