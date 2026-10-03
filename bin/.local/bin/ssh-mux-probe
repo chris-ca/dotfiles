@@ -1,0 +1,18 @@
+#!/bin/sh
+# Usage: ssh-mux-probe <%C hash>   Called by ~/.ssh/config (Match exec) before each ssh.
+# If a shared connection exists for this host but doesn't answer within 2s
+# (dead network after sleep/roaming), drop it so ssh opens a fresh one.
+# Always exits 1, so the Match never applies any options.
+sock="$HOME/.ssh/cm-$1"
+[ -S "$sock" ] || exit 1
+
+# -F /dev/null: don't re-enter this config; ProxyCommand=false: never fall
+# back to a real connection if the master is gone
+if ! timeout 2 ssh -F /dev/null -S "$sock" -o ControlMaster=no -o ProxyCommand=false \
+        -o BatchMode=yes -T _ true </dev/null >/dev/null 2>&1; then
+    # Move it aside so ssh starts a new master at once, then tell the old one
+    # to quit in the background so that can't add delay
+    mv -f "$sock" "$sock.dead"
+    { timeout 5 ssh -F /dev/null -S "$sock.dead" -O exit _; rm -f "$sock.dead"; } >/dev/null 2>&1 &
+fi
+exit 1

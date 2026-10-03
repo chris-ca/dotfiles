@@ -1,0 +1,7 @@
+#!/bin/sh
+# Usage: ssh-reset   Close all shared ssh connections (ControlMaster), e.g. after a network change.
+for sock in "$HOME"/.ssh/cm-*; do
+    [ -S "$sock" ] || continue
+    timeout 1 ssh -S "$sock" -O exit _ 2>/dev/null
+    rm -f "$sock"
+done

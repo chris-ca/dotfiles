@@ -55,7 +55,7 @@ Then check these, and create the files the host needs:
 | `tmux`  | `~/.tmux.conf` |
 | `ssh`   | `~/.ssh/config`, `~/.ssh/rc` |
 | `vim`   | `~/.vimrc` |
-| `bin`   | `~/.local/bin/randstring`, `~/.local/bin/ta` |
+| `bin`   | `~/.local/bin/randstring`, `~/.local/bin/ta`, `~/.local/bin/ssh-reset`, `~/.local/bin/ssh-mux-probe` |
 
 `install.sh`:
 - **Packages:** installs all of them by default. To install a subset, name them: `./install.sh bash git`.
@@ -194,9 +194,10 @@ Unchanged: `s`, `b`, `c`, `l`, `lg`, `push-test`, `forcepush`.
 
 ### `~/.ssh/config` (new)
 Shared defaults for every host:
-- **Keepalive** every 60 seconds (`ServerAliveInterval 60`), so idle sessions to VPSes don't drop.
+- **Keepalive** every 15 seconds (`ServerAliveInterval 15`), so idle sessions to VPSes don't drop, and a session on a dead network closes after about 45 seconds instead of hanging.
 - **Agent:** keys are added to the agent on first use (`AddKeysToAgent yes`).
 - **Connection reuse** (`ControlMaster`/`ControlPersist 10m`): after the first connection to a host, further `ssh`, `scp`, `rsync` and `git push` to it connect instantly for 10 minutes.
+- **Connected or failed within 10 seconds:** before reusing a connection, `ssh-mux-probe` checks that it still answers (2 seconds max) and drops it if not. A fresh connection then has 7 seconds (`ConnectTimeout 7`). Password and passphrase prompts don't count toward this. The probe needs the `bin` package.
 
 Host entries go in `~/.ssh/config.d/` (not tracked). They are read first, so they override the defaults:
 
@@ -208,13 +209,17 @@ Host web1
     ForwardAgent yes
 ```
 
-**Connection reuse caveats**
-- A reused connection keeps the options of the first one. If you connect without `-A` first, a later `ssh -A` to the same host doesn't forward the agent until the connection closes. Set `ForwardAgent yes` in the host entry for hosts where you always need it.
-- If a connection hangs after a network change: `ssh -O exit <host>`.
+Only set `ForwardAgent yes` for your own servers, never under `Host *`: root on any host you connect to can use a forwarded agent.
+
+**Connection reuse and reliability**
+- **Why connections used to stall:** after a laptop sleep or a network change, the shared connection was still running but its network link was dead. New `ssh` commands attached to it and waited until keepalive gave up, up to 3 minutes. A missing or stale socket file was never the problem: ssh notices it at once and connects fresh. `ssh-mux-probe` now catches the dead-link case in 2 seconds.
+- **`-A` on a reused connection:** a reused connection keeps the options it was opened with, so `ssh -A` after a plain `ssh` would forward no agent. In bash, `ssh` with `-A` now always opens its own connection. Hosts in `config.d` with `ForwardAgent yes` don't need `-A`.
+- **Manual escape hatches:** `ssh-reset` closes all shared connections. `ssh -S none <host>` makes one connection without sharing.
 
 ### `~/.ssh/rc` (fixed)
 This keeps SSH agent forwarding working inside tmux after you reconnect. It was previously installed as `~/.ssh_rc`, a path sshd never runs, so it never worked. The `tmux` alias wrapper covered for it using a different socket name. Now there is a single mechanism:
-- `~/.ssh/rc` points `~/.ssh/ssh_auth_sock` at the current agent on every login.
+- `~/.ssh/rc` points `~/.ssh/ssh_auth_sock` at the agent of a login. It only does this when the link's current target is gone. Otherwise every short `scp` or `rsync` would repoint it at a socket that disappears when that command ends.
+- `.bashrc` does the same for interactive shells. This covers workstations, where `~/.ssh/rc` never runs, so tmux there uses the local agent. It also repairs the link on servers after the session it pointed to has ended.
 - tmux always uses that path.
 - `~/.ssh/rc` also handles X11 forwarding, because sshd stops handling it itself when this file exists.
 
@@ -264,6 +269,10 @@ ta          # attach to "main", or create it
 ta work     # attach to "work", or create it
 ```
 Inside tmux it switches to the session instead of starting tmux within tmux. Names must match exactly (`ta ma` won't pick `main`).
+
+**`ssh-reset`** closes all shared ssh connections. Usually not needed, because `ssh-mux-probe` drops dead ones automatically.
+
+**`ssh-mux-probe`** isn't run by hand. `~/.ssh/config` runs it before every ssh to drop a shared connection that no longer answers (see [SSH](#ssh)).
 
 ---
 

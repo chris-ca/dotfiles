@@ -6,7 +6,7 @@ Personal shell, git and tmux configuration shared across VPSes, workstations and
 - **Per-host settings live outside the repo:** `~/.profile.local`, `~/.bashrc.local`, `~/.gitconfig.local` (incl. `user.email`) and `~/.ssh/config.d/`. `~/.sh_local` is no longer read.
 - **New prompt:** shows the git branch, `[n]` in red when the last command failed, and `+`/`:` for vi insert/normal mode. History is saved immediately, with timestamps.
 - **Safer git defaults:** `push.default=simple` (was `matching`) and `pull.ff=only`, which means use `git pull --rebase` when branches have diverged.
-- **SSH and tmux:** shared ssh config with keepalive and connection reuse; agent forwarding in tmux works again; tmux plugins install themselves.
+- **SSH and tmux:** shared ssh config with keepalive and connection reuse (dead shared connections are dropped, so ssh connects or fails within 10s); agent forwarding works in tmux, also on workstations and with `-A`; tmux plugins install themselves.
 - **Removed:** Neovim, screen, i3 configs.
 
 Details, and how to update an existing host: **[UPDATES.md](UPDATES.md)**.
@@ -27,9 +27,9 @@ Re-running is safe. A leftover legacy `~/.sh_local` is reported; move its conten
 | `bash`  | `.profile` (environment), `.bash_profile`, `.bashrc`, `.bash_aliases`, `.inputrc` |
 | `git`   | `.gitconfig`, `.config/git/ignore` (global ignores) |
 | `tmux`  | `.tmux.conf` (TPM and plugins install themselves on first start) |
-| `ssh`   | `.ssh/config` (keepalive, connection reuse), `.ssh/rc` (stable agent socket for tmux) |
+| `ssh`   | `.ssh/config` (keepalive, connection reuse, connect or fail within 10s), `.ssh/rc` (stable agent socket for tmux) |
 | `vim`   | `.vimrc` (no plugins; swap/undo files in `~/.vim/`) |
-| `bin`   | `~/.local/bin` scripts: `randstring [len] [charset]`, `ta [name]` (tmux attach-or-new) |
+| `bin`   | `~/.local/bin` scripts: `randstring [len] [charset]`, `ta [name]` (tmux attach-or-new), `ssh-reset` (close shared ssh connections), `ssh-mux-probe` (used by `.ssh/config`) |
 
 ## Per-host overrides (not tracked)
 - `~/.profile.local`: sourced at the end of `.profile` (login environment), e.g. extra `PATH` entries.

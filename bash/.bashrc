@@ -67,6 +67,23 @@ if grep -qi microsoft /proc/version 2>/dev/null; then
     alias open='explorer.exe'
 fi
 
+# tmux uses ~/.ssh/ssh_auth_sock as its agent. ~/.ssh/rc maintains it on ssh
+# logins; this covers workstations (local agent) and links whose session ended
+if [ -S "$SSH_AUTH_SOCK" ] && [ "$SSH_AUTH_SOCK" != "$HOME/.ssh/ssh_auth_sock" ] \
+        && [ ! -S "$HOME/.ssh/ssh_auth_sock" ]; then
+    ln -sf "$SSH_AUTH_SOCK" "$HOME/.ssh/ssh_auth_sock"
+fi
+
+# A shared connection keeps the options it was opened with, so -A over one
+# opened without it would forward nothing: give -A its own connection
+ssh() {
+    local a
+    for a; do
+        case $a in --*) ;; -*A*) command ssh -S none "$@"; return ;; esac
+    done
+    command ssh "$@"
+}
+
 test -f ~/.bashrc.local && . ~/.bashrc.local
 
 # Colors are resolved after ~/.bashrc.local so hosts can set PS1_BG / PS1_FG
