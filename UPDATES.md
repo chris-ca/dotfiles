@@ -25,6 +25,8 @@ cd ~/.dotfiles && git pull
 ./install.sh
 ```
 
+Run `./install.sh` again after every later `git pull`. Files already installed update on their own, but new files (such as new scripts in `bin`) are only linked by `install.sh`.
+
 Then check these, and create the files the host needs:
 
 1. **`~/.sh_local`**: if it exists, `install.sh` prints a note, because the file is no longer read. Move `PATH`/`export` lines to `~/.profile.local`, and everything interactive (nvm, prompt colour, aliases) to `~/.bashrc.local`. Then delete it.
@@ -197,7 +199,7 @@ Shared defaults for every host:
 - **Keepalive** every 15 seconds (`ServerAliveInterval 15`), so idle sessions to VPSes don't drop, and a session on a dead network closes after about 45 seconds instead of hanging.
 - **Agent:** keys are added to the agent on first use (`AddKeysToAgent yes`).
 - **Connection reuse** (`ControlMaster`/`ControlPersist 10m`): after the first connection to a host, further `ssh`, `scp`, `rsync` and `git push` to it connect instantly for 10 minutes.
-- **Connected or failed within 10 seconds:** before reusing a connection, `ssh-mux-probe` checks that it still answers (2 seconds max) and drops it if not. A fresh connection then has 7 seconds (`ConnectTimeout 7`). Password and passphrase prompts don't count toward this. The probe needs the `bin` package.
+- **Connected or failed within 10 seconds:** before reusing a connection, `ssh-mux-probe` checks that it still answers (2 seconds max) and drops it if not. A fresh connection then has 7 seconds (`ConnectTimeout 7`). Password and passphrase prompts don't count toward this. The probe needs the `bin` package. Without it, ssh skips the check silently and a stalled shared connection can still hang.
 
 Host entries go in `~/.ssh/config.d/` (not tracked). They are read first, so they override the defaults:
 
